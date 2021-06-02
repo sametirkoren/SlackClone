@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Errors;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ namespace Application.Channels
             }
             public async Task<List<Channel>> Handle(Query request, CancellationToken cancellationToken)
             {
+                
                 return await _context.Channels.ToListAsync();
             }
         }

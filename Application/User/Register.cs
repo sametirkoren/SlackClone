@@ -25,10 +25,16 @@ namespace Application.User
         }
 
         public class CommandValidator : AbstractValidator<Command>{
-            public CommandValidator()
+            private readonly UserManager<AppUser> userManager;
+            public CommandValidator(UserManager<AppUser> userManager)
             {
-                RuleFor(x=>x.UserName).NotEmpty();
-                RuleFor(x=>x.Email).NotEmpty();
+                RuleFor(x=>x.UserName).NotEmpty()
+                    .MustAsync(async (username , cancellation) => (await userManager.FindByNameAsync(username)) == null)
+                    .WithMessage("Bu Kullanıcı adı zaten mevcut.");
+                RuleFor(x=>x.Email).NotEmpty()
+                    .EmailAddress()
+                    .MustAsync(async (email , cancellation) => (await userManager.FindByNameAsync(email)) == null)
+                    .WithMessage("Bu email zaten mevcut.");;
                 RuleFor(x=>x.Password).Password();
             }
         }
@@ -45,13 +51,7 @@ namespace Application.User
             }
             public async Task<User> Handle(Command request, CancellationToken cancellationToken)
             {
-                if(await _userManager.FindByEmailAsync(request.Email) !=null){
-                    throw new RestException(HttpStatusCode.BadRequest , new {Email = "Bu e-posta zaten var"});
-                }
-
-                if(await _userManager.FindByNameAsync(request.UserName) !=null){
-                    throw new RestException(HttpStatusCode.BadRequest , new {UserName = "Bu kullanıcı zaten var"});
-                }
+               
 
                 var user = new AppUser{
                     Email = request.Email,

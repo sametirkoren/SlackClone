@@ -1,8 +1,11 @@
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Errors;
 using Domain;
 using MediatR;
+using Persistence;
 
 namespace Application.Channels
 {
@@ -15,9 +18,19 @@ namespace Application.Channels
 
         public class Handler : IRequestHandler<Query, Channel>
         {
+            private DataContext _context;
+            public Handler(DataContext context){
+                _context = context ?? throw new ArgumentNullException(nameof(context));
+            }
             public async Task<Channel> Handle(Query request, CancellationToken cancellationToken)
             {
-                throw new NotImplementedException();
+                var channel = await _context.Channels.FindAsync(request.Id);
+
+                if(channel == null){
+                    throw new RestException(HttpStatusCode.NotFound,new {channel = "Not Found"});
+
+                }
+                return channel;
             }
         }
     }

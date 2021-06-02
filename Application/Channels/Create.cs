@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain;
+using FluentValidation;
 using MediatR;
 using Persistence;
 
@@ -15,6 +16,13 @@ namespace Application.Channels
             public string Description {get;set;}
         }
 
+        public class CommandValidator : AbstractValidator<Command>{
+            public CommandValidator()
+            {
+                RuleFor(x=>x.Name).NotEmpty();
+                RuleFor(x=>x.Description).NotEmpty();
+            }
+        }
         public class Handler : IRequestHandler<Command>
         {
              private DataContext _context;

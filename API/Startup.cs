@@ -87,6 +87,7 @@ namespace API
                 };
             });
             
+            services.AddAutoMapper(typeof(Application.Channels.Details));
 
             services.AddScoped<IJwtGenerator,JwtGenerator>();
             services.AddScoped<IUserAccessor,UserAccessor>();

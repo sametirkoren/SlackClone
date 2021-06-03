@@ -12,7 +12,7 @@ namespace Application.User
 {
     public class Login
     {
-        public class Query : IRequest<User>{
+        public class Query : IRequest<UserDto>{
             public string Email{get;set;}
             public string Password {get;set;}
         }
@@ -25,7 +25,7 @@ namespace Application.User
                 RuleFor(x=>x.Password).NotEmpty();
            }
         }
-        public class Handler : IRequestHandler<Query, User>
+        public class Handler : IRequestHandler<Query, UserDto>
         {
             private readonly UserManager<AppUser> _userManager;
             private readonly SignInManager<AppUser> _signInManager;
@@ -36,7 +36,7 @@ namespace Application.User
                 _userManager = userManager;
                 _jwtGenerator = jwtGenerator;
             }
-            public async Task<User> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<UserDto> Handle(Query request, CancellationToken cancellationToken)
             {
                 var user = await _userManager.FindByEmailAsync(request.Email);
                 if(user == null){
@@ -46,7 +46,7 @@ namespace Application.User
                 var result = await _signInManager.CheckPasswordSignInAsync(user,request.Password,false);
 
                 if(result.Succeeded){
-                    return new User{
+                    return new UserDto{
                         Token=_jwtGenerator.CreateToken(user),
                         UserName = user.UserName,
                         Email = user.Email

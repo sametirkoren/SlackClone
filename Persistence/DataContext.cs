@@ -13,6 +13,7 @@ namespace Persistence
 
 
         public DbSet<Channel> Channels{get;set;}
+        public DbSet<Message> Messages{get;set;}
 
 
        protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -43,6 +44,11 @@ namespace Persistence
 
            
            );
+
+           modelBuilder.Entity<Message>()
+           .HasOne(x=>x.Sender)
+           .WithMany(x=>x.Messages)
+           .HasForeignKey(x=>x.SenderId);
        }
         
     }

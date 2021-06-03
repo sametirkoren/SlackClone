@@ -11,5 +11,10 @@ namespace API.Controllers
         public async Task<ActionResult<MessageDto>> Create(Application.Messages.Create.Command command){
             return await Mediator.Send(command);
         }
+
+        [HttpPost("upload")]
+        public async Task<ActionResult<MessageDto>> MediaUpload([FromForm] Application.Messages.Create.Command command){
+            return await Mediator.Send(command);
+        }
     }
 }

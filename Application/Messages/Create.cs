@@ -4,8 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Errors;
 using Application.Interfaces;
+using AutoMapper;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -19,6 +21,8 @@ namespace Application.Messages
             public Guid ChannelId {get;set;}
 
             public MessageType MessageType {get;set;} = MessageType.Text;
+
+            public IFormFile File {get;set;}
         }
 
         public class Handler : IRequestHandler<Command, MessageDto>
@@ -26,10 +30,14 @@ namespace Application.Messages
             private readonly DataContext _context;
             private readonly IUserAccessor _userAccessor;
 
-            public Handler(DataContext context ,IUserAccessor userAccessor)
+            private readonly IMapper _mapper;
+            private readonly IMediaUpload _mediaUpload;
+            public Handler(DataContext context, IUserAccessor userAccessor, IMapper mapper, IMediaUpload mediaUpload )
             {
                 _context = context;
                 _userAccessor = userAccessor;
+                _mapper = mapper;
+                _mediaUpload = mediaUpload;
             }
             public async Task<MessageDto> Handle(Command request, CancellationToken cancellationToken)
             {
@@ -42,7 +50,7 @@ namespace Application.Messages
                 }
 
                 var message = new Message{
-                    Content = request.Content,
+                    Content = request.MessageType == MessageType.Text ? request.Content : _mediaUpload.UploadMedia(request.File).Url,
                     Channel = channel,
                     Sender = user,
                     CreatedAt = DateTime.Now,

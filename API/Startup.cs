@@ -8,6 +8,7 @@ using Application.Channels;
 using Application.Interfaces;
 using Domain;
 using FluentValidation.AspNetCore;
+using Infrastructure.MediaUpload;
 using Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -91,6 +92,10 @@ namespace API
 
             services.AddScoped<IJwtGenerator,JwtGenerator>();
             services.AddScoped<IUserAccessor,UserAccessor>();
+
+            services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
+
+            services.AddScoped<IMediaUpload , MediaUpload>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

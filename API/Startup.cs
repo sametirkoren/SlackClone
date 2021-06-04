@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using API.Middleware;
+using API.SignalR;
 using Application.Channels;
 using Application.Interfaces;
 using Domain;
@@ -66,7 +67,7 @@ namespace API
             services.AddCors(opt => {
                 opt.AddPolicy("CorsPolicy",
                 policy => {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000").AllowCredentials();
                 }
                 );
             });
@@ -86,6 +87,19 @@ namespace API
                     ValidateAudience = false,
                     ValidateIssuer = false
                 };
+
+                opt.Events = new JwtBearerEvents{
+                    OnMessageReceived = context => {
+                        var accessToken = context.Request.Query["access_token"];
+
+                        var path = context.HttpContext.Request.Path;
+
+                        if(!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chat")){
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
             
             services.AddAutoMapper(typeof(Application.Channels.Details));
@@ -96,6 +110,8 @@ namespace API
             services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
 
             services.AddScoped<IMediaUpload , MediaUpload>();
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -119,6 +135,7 @@ namespace API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chat");
             });
         }
     }

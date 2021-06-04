@@ -9,7 +9,8 @@ namespace Domain
     public enum ChannelType{
         Channel = 1 ,
 
-        Room = 2
+        Room = 2,
+        Starred = 3
 
     }
 }

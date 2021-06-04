@@ -15,8 +15,8 @@ namespace API.Controllers
        
 
         [HttpGet]
-        public async Task<ActionResult<List<Channel>>> List(){
-            return await Mediator.Send(new List.Query());
+        public async Task<ActionResult<List<Channel>>> List([FromQuery] List.Query query){
+            return await Mediator.Send(query);
         }
 
         [HttpGet("{id}")]
@@ -37,6 +37,12 @@ namespace API.Controllers
         [HttpGet("private/{id}")]
         public async Task<ActionResult<ChannelDto>> Private(string id){
             return await Mediator.Send(new PrivateChannelDetails.Query {UserId=id});
+        }
+
+        [HttpPut("{id}")]
+        public async Task<Unit> Edit (Guid id , [FromBody] Edit.Command command){
+                command.Id = id;
+                return await Mediator.Send(command);
         }
     }
 }

@@ -14,6 +14,8 @@ namespace Application.Channels
             public Guid Id {get;set;}
             public string Name {get;set;}
             public string Description {get;set;}
+
+            public ChannelType ChannelType {get;set;} = ChannelType.Channel;
         }
 
         public class CommandValidator : AbstractValidator<Command>{
@@ -36,7 +38,7 @@ namespace Application.Channels
                     Id = request.Id,
                     Name = request.Name,
                     Description = request.Description,
-                    ChannelType = ChannelType.Channel
+                    ChannelType = request.ChannelType
 
                 };
 

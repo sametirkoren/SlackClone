@@ -7,6 +7,7 @@ using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Persistence;
 
 namespace Application.User
 {
@@ -30,11 +31,14 @@ namespace Application.User
             private readonly UserManager<AppUser> _userManager;
             private readonly SignInManager<AppUser> _signInManager;
             private readonly IJwtGenerator _jwtGenerator;
-            public Handler(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager , IJwtGenerator jwtGenerator)
+            private readonly DataContext _context;
+            public Handler(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager , IJwtGenerator jwtGenerator , DataContext context)
             {
                 _signInManager = signInManager;
                 _userManager = userManager;
                 _jwtGenerator = jwtGenerator;
+                _context = context;
+                
             }
             public async Task<UserDto> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -46,10 +50,15 @@ namespace Application.User
                 var result = await _signInManager.CheckPasswordSignInAsync(user,request.Password,false);
 
                 if(result.Succeeded){
+                    user.IsOnline  = true;
+                    await _context.SaveChangesAsync();
                     return new UserDto{
                         Token=_jwtGenerator.CreateToken(user),
                         UserName = user.UserName,
-                        Email = user.Email
+                        Email = user.Email,
+                        Id = user.Id,
+                        IsOnline = user.IsOnline,
+                        Avatar = user.Avatar
                     };
                 }
 

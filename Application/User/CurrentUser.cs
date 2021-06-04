@@ -31,7 +31,8 @@ namespace Application.User
                 return new UserDto{
                     UserName = user.UserName,
                     Token = _jwtGenerator.CreateToken(user),
-                    Email = user.Email
+                    Email = user.Email,
+                    Id = user.Id
                 };
             }
         }

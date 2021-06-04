@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Errors;
@@ -14,7 +15,7 @@ namespace Application.Channels
     {
         public class Query : IRequest<List<Channel>>
         {
-
+            public ChannelType ChannelType {get;set;} = ChannelType.Channel;
         }
 
         public class Handler : IRequestHandler<Query, List<Channel>>
@@ -26,7 +27,7 @@ namespace Application.Channels
             public async Task<List<Channel>> Handle(Query request, CancellationToken cancellationToken)
             {
                 
-                return await _context.Channels.ToListAsync();
+                return await _context.Channels.Where(x=>x.ChannelType == request.ChannelType).ToListAsync();
             }
         }
     }

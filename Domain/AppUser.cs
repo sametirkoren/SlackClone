@@ -10,5 +10,7 @@ namespace Domain
 
         [JsonIgnore]
         public ICollection<Message> Messages {get;set;}
+
+        public bool IsOnline{get;set;}
     }
 }

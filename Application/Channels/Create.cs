@@ -35,7 +35,8 @@ namespace Application.Channels
                 {
                     Id = request.Id,
                     Name = request.Name,
-                    Description = request.Description
+                    Description = request.Description,
+                    ChannelType = ChannelType.Channel
 
                 };
 

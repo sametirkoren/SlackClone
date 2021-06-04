@@ -11,5 +11,7 @@ namespace Domain{
 
         public ChannelType ChannelType {get;set;}
 
+        public string PrivateChannelId{get;set;}
+
     }
 }

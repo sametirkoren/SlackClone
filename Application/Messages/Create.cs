@@ -63,10 +63,12 @@ namespace Application.Messages
                     return new MessageDto{
                         Sender = new User.UserDto{
                             UserName = user.UserName,
-                            Avatar = user.Avatar
+                            Avatar = user.Avatar,
+                            Email = user.Email
                         },
                         Content = message.Content,
-                        CreatedAt = message.CreatedAt
+                        CreatedAt = message.CreatedAt,
+                        MessageType = message.MessageType
                     };
                 }
 

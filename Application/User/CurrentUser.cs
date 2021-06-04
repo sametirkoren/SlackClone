@@ -30,7 +30,8 @@ namespace Application.User
                 var user = await _userManager.FindByNameAsync(_userAccessor.GetCurrentUserName());
                 return new UserDto{
                     UserName = user.UserName,
-                    Token = _jwtGenerator.CreateToken(user)
+                    Token = _jwtGenerator.CreateToken(user),
+                    Email = user.Email
                 };
             }
         }

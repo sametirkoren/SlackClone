@@ -1,6 +1,8 @@
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Errors;
 using Domain;
 using MediatR;
 using Persistence;
@@ -30,6 +32,11 @@ namespace Application.Channels
             {
                 var channel = await _context.Channels.FindAsync(request.Id);
 
+                if(channel == null) {
+                    throw new RestException(HttpStatusCode.NotFound,new {Channel = "Kanal bulunamadı"});
+                }
+
+                channel.ChannelType = request.ChannelType;
                 channel.Name = request.Name ?? channel.Name;
                 channel.Description = request.Description ?? channel.Description;
 

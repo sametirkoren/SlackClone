@@ -15,6 +15,8 @@ namespace Persistence
         public DbSet<Channel> Channels{get;set;}
         public DbSet<Message> Messages{get;set;}
 
+        public DbSet<TypingNotification> TypingNotification {get;set;}
+
 
        protected override void OnModelCreating(ModelBuilder modelBuilder)
        {
@@ -49,6 +51,9 @@ namespace Persistence
            .HasOne(x=>x.Sender)
            .WithMany(x=>x.Messages)
            .HasForeignKey(x=>x.SenderId);
+
+
+           modelBuilder.Entity<AppUser>().HasOne(a=> a.TypingNotification).WithOne(b=>b.Sender).HasForeignKey<TypingNotification>(b=>b.Id);
        }
         
     }

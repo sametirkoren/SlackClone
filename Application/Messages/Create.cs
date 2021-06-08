@@ -64,8 +64,11 @@ namespace Application.Messages
                         Sender = new User.UserDto{
                             UserName = user.UserName,
                             Avatar = user.Avatar,
-                            Email = user.Email
+                            Email = user.Email,
+                            Id = user.Id,
+                            IsOnline = user.IsOnline
                         },
+                        ChannelId = message.ChannelId,
                         Content = message.Content,
                         CreatedAt = message.CreatedAt,
                         MessageType = message.MessageType

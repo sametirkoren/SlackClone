@@ -11,5 +11,7 @@ namespace Application.Messages
         public Application.User.UserDto Sender {get;set;}
 
         public MessageType MessageType {get;set;}
+
+        public Guid ChannelId {get;set;}
     }
 }

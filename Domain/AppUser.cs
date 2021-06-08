@@ -12,5 +12,9 @@ namespace Domain
         public ICollection<Message> Messages {get;set;}
 
         public bool IsOnline{get;set;}
+
+        [JsonIgnore]
+
+        public TypingNotification TypingNotification{get;set;}
     }
 }

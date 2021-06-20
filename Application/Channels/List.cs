@@ -11,24 +11,23 @@ using Persistence;
 
 namespace Application.Channels
 {
-    public class List
-    {
-        public class Query : IRequest<List<Channel>>
+ 
+        public class ListChannelQuery : IRequest<List<Channel>>
         {
             public ChannelType ChannelType {get;set;} = ChannelType.Channel;
         }
 
-        public class Handler : IRequestHandler<Query, List<Channel>>
+        public class ListChannelQueryHandler : IRequestHandler<ListChannelQuery, List<Channel>>
         {
             private DataContext _context;
-            public Handler(DataContext context){
+            public ListChannelQueryHandler(DataContext context){
                 _context = context ?? throw new ArgumentNullException(nameof(context));
             }
-            public async Task<List<Channel>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<List<Channel>> Handle(ListChannelQuery request, CancellationToken cancellationToken)
             {
                 
                 return await _context.Channels.Where(x=>x.ChannelType == request.ChannelType).ToListAsync();
             }
         }
-    }
+    
 }

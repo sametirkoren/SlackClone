@@ -8,22 +8,20 @@ using Persistence;
 
 namespace Application.User
 {
-    public class Logout
-    {
-        public class Query : IRequest{
+        public class UserLogoutQuery : IRequest{
             public string UserId {get;set;}
         }
 
-        public class Handler : IRequestHandler<Query>
+        public class UserLogoutQueryHandler : IRequestHandler<UserLogoutQuery>
         {
 
             private readonly DataContext _context;
 
-            public Handler(DataContext context)
+            public UserLogoutQueryHandler(DataContext context)
             {
                 _context = context;
             }
-            public async Task<Unit> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(UserLogoutQuery request, CancellationToken cancellationToken)
             {
                var user = await _context.Users.FindAsync(request.UserId);
 
@@ -43,4 +41,3 @@ namespace Application.User
             }
         }
     }
-}

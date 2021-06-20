@@ -15,12 +15,12 @@ namespace API.Controllers
         }
         [HttpPost]
 
-        public async Task<ActionResult<MessageDto>> Create(Application.Messages.Create.Command command){
+        public async Task<ActionResult<MessageDto>> Create(CreateMessageCommand command){
             return await Mediator.Send(command);
         }
 
         [HttpPost("upload")]
-        public async Task<ActionResult<MessageDto>> MediaUpload([FromForm] Application.Messages.Create.Command command){
+        public async Task<ActionResult<MessageDto>> MediaUpload([FromForm] CreateMessageCommand command){
            var result = await Mediator.Send(command);
            await _hubContext.Clients.All.SendAsync("ReceiveMessage",result);
            return result;

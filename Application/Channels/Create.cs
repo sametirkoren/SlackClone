@@ -8,9 +8,8 @@ using Persistence;
 
 namespace Application.Channels
 {
-    public class Create
-    {
-        public class Command : IRequest{
+   
+        public class CreateChannelCommand : IRequest{
             public Guid Id {get;set;}
             public string Name {get;set;}
             public string Description {get;set;}
@@ -18,20 +17,20 @@ namespace Application.Channels
             public ChannelType ChannelType {get;set;} = ChannelType.Channel;
         }
 
-        public class CommandValidator : AbstractValidator<Command>{
+        public class CommandValidator : AbstractValidator<CreateChannelCommand>{
             public CommandValidator()
             {
                 RuleFor(x=>x.Name).NotEmpty();
                 RuleFor(x=>x.Description).NotEmpty();
             }
         }
-        public class Handler : IRequestHandler<Command>
+        public class CreateChannelCommandHandler : IRequestHandler<CreateChannelCommand>
         {
              private DataContext _context;
-            public Handler(DataContext context){
+            public CreateChannelCommandHandler(DataContext context){
                 _context = context ?? throw new ArgumentNullException(nameof(context));
             }
-            public  async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public  async Task<Unit> Handle(CreateChannelCommand request, CancellationToken cancellationToken)
             {
                 var channel = new Channel
                 {
@@ -52,4 +51,3 @@ namespace Application.Channels
             }
         }
     }
-}

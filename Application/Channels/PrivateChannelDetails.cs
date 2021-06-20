@@ -10,20 +10,19 @@ using Persistence;
 
 namespace Application.Channels
 {
-    public class PrivateChannelDetails
-    {
-        public class Query : IRequest<ChannelDto>{
+  
+        public class PrivateChannelDetailsQuery : IRequest<ChannelDto>{
             public string UserId{get;set;}
         }
 
 
-        public class Handler : IRequestHandler<Query, ChannelDto>
+        public class PrivateChannelDetailsQueryHandler : IRequestHandler<PrivateChannelDetailsQuery, ChannelDto>
         {
 
             private readonly DataContext _context;
             private readonly IMapper _mapper;
             private readonly IUserAccessor _userAccessor;            
-            public Handler( DataContext context,
+            public PrivateChannelDetailsQueryHandler( DataContext context,
                 IMapper mapper,
                 IUserAccessor userAccessor)
             {
@@ -31,7 +30,7 @@ namespace Application.Channels
                _context=context;
                _userAccessor=userAccessor;
             }
-            public async Task<ChannelDto> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<ChannelDto> Handle(PrivateChannelDetailsQuery request, CancellationToken cancellationToken)
             {
                     var currentUser = await _context.Users.SingleOrDefaultAsync(x=>x.UserName == _userAccessor.GetCurrentUserName());
 
@@ -68,4 +67,3 @@ namespace Application.Channels
             private string GetPrivateChannelId(string currentUserId,string userId) => $"{currentUserId}/{userId}";
         }
     }
-}

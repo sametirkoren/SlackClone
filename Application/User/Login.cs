@@ -11,14 +11,13 @@ using Persistence;
 
 namespace Application.User
 {
-    public class Login
-    {
-        public class Query : IRequest<UserDto>{
+
+        public class UserLoginQuery : IRequest<UserDto>{
             public string Email{get;set;}
             public string Password {get;set;}
         }
 
-        public class QueryValidator : AbstractValidator<Query>{
+        public class QueryValidator : AbstractValidator<UserLoginQuery>{
            
            public QueryValidator()
            {
@@ -26,13 +25,13 @@ namespace Application.User
                 RuleFor(x=>x.Password).NotEmpty();
            }
         }
-        public class Handler : IRequestHandler<Query, UserDto>
+        public class UserLoginQueryHandler : IRequestHandler<UserLoginQuery, UserDto>
         {
             private readonly UserManager<AppUser> _userManager;
             private readonly SignInManager<AppUser> _signInManager;
             private readonly IJwtGenerator _jwtGenerator;
             private readonly DataContext _context;
-            public Handler(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager , IJwtGenerator jwtGenerator , DataContext context)
+            public UserLoginQueryHandler(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager , IJwtGenerator jwtGenerator , DataContext context)
             {
                 _signInManager = signInManager;
                 _userManager = userManager;
@@ -40,7 +39,7 @@ namespace Application.User
                 _context = context;
                 
             }
-            public async Task<UserDto> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<UserDto> Handle(UserLoginQuery request, CancellationToken cancellationToken)
             {
                 var user = await _userManager.FindByEmailAsync(request.Email);
                 if(user == null){
@@ -65,5 +64,5 @@ namespace Application.User
                 throw new RestException(HttpStatusCode.Unauthorized);
             }
         }
-    }
+    
 }

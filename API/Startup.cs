@@ -49,15 +49,12 @@ namespace API
 
 
             services.AddDbContext<DataContext>(x=>{
-                x.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
+                x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
             services.AddControllers(opt=>{
-                var policy = new AuthorizationPolicyBuilder()
-                .RequireAuthenticatedUser()
-                .Build();
-                opt.Filters.Add(new AuthorizeFilter(policy));
+               
             }).AddFluentValidation(config => {
-                config.RegisterValidatorsFromAssemblyContaining<Create>();
+                config.RegisterValidatorsFromAssemblyContaining<CreateChannelCommand>();
             });
             services.AddSwaggerGen(c =>
             {
@@ -67,19 +64,20 @@ namespace API
             services.AddCors(opt => {
                 opt.AddPolicy("CorsPolicy",
                 policy => {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000").AllowCredentials();
+                   policy.WithOrigins("https://slack-klon.netlify.app").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
                 }
                 );
             });
 
-            services.AddMediatR(typeof(List.Handler).Assembly);
+            services.AddMediatR(typeof(ListChannelQueryHandler).Assembly);
 
             var builder = services.AddIdentityCore<AppUser>();
+            
             var identityBuilder = new IdentityBuilder(builder.UserType,builder.Services);
             identityBuilder.AddEntityFrameworkStores<DataContext>();
             identityBuilder.AddSignInManager<SignInManager<AppUser>>();
             
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Çok Gizli Bir Şifre"));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt => {
                 opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters{
                     ValidateIssuerSigningKey = true,
@@ -102,12 +100,12 @@ namespace API
                 };
             });
             
-            services.AddAutoMapper(typeof(Application.Channels.Details));
+            services.AddAutoMapper(typeof(DetailChannelQuery));
 
             services.AddScoped<IJwtGenerator,JwtGenerator>();
             services.AddScoped<IUserAccessor,UserAccessor>();
 
-            services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
 
             services.AddScoped<IMediaUpload , MediaUpload>();
 
@@ -134,8 +132,9 @@ namespace API
          
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
                 endpoints.MapHub<ChatHub>("/chat");
+                endpoints.MapControllers();
+              
             });
         }
     }

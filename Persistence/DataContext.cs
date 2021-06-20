@@ -53,7 +53,11 @@ namespace Persistence
            .HasForeignKey(x=>x.SenderId);
 
 
-           modelBuilder.Entity<AppUser>().HasOne(a=> a.TypingNotification).WithOne(b=>b.Sender).HasForeignKey<TypingNotification>(b=>b.Id);
+           modelBuilder
+                .Entity<AppUser>()
+                .HasOne(a => a.TypingNotification)
+                .WithOne(b => b.Sender)
+                .HasForeignKey<TypingNotification>(b => b.Id);
        }
         
     }

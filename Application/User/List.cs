@@ -9,13 +9,11 @@ using Persistence;
 
 namespace Application.User
 {
-    public class List
-    {
-        public class Query : IRequest<List<UserDto>>{
+          public class UserListQuery : IRequest<List<UserDto>>{
 
         }
 
-        public class Handler : IRequestHandler<Query, List<UserDto>>
+        public class UserListQueryHandler : IRequestHandler<UserListQuery, List<UserDto>>
         {
 
 
@@ -23,12 +21,12 @@ namespace Application.User
             private readonly IMapper _mapper;
 
        
-            public Handler(DataContext context , IMapper mapper)
+            public UserListQueryHandler(DataContext context , IMapper mapper)
             {
                 _mapper =mapper;
                 _context =context;
             }
-            public async Task<List<UserDto>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<List<UserDto>> Handle(UserListQuery request, CancellationToken cancellationToken)
             {
                 var users = await _context.Users.ToListAsync();
 
@@ -37,5 +35,5 @@ namespace Application.User
                 return userToReturn;
             }
         }
-    }
+    
 }

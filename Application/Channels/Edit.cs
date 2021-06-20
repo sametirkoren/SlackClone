@@ -9,9 +9,8 @@ using Persistence;
 
 namespace Application.Channels
 {
-    public class Edit
-    {
-        public class Command : IRequest{
+  
+        public class UpdateChannelCommand : IRequest{
             public Guid Id {get;set;}
 
             public string Name {get;set;}
@@ -21,14 +20,14 @@ namespace Application.Channels
             public ChannelType ChannelType {get;set;} = ChannelType.Channel;
         }
 
-        public class Handler : IRequestHandler<Command>
+        public class UpdateChannelCommandHandler : IRequestHandler<UpdateChannelCommand>
         {
             private readonly DataContext _context;
-            public Handler(DataContext context)
+            public UpdateChannelCommandHandler(DataContext context)
             {
                 _context = context;
             }
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(UpdateChannelCommand request, CancellationToken cancellationToken)
             {
                 var channel = await _context.Channels.FindAsync(request.Id);
 
@@ -48,4 +47,3 @@ namespace Application.Channels
             }
         }
     }
-}

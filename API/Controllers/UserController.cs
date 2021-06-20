@@ -13,7 +13,7 @@ namespace API.Controllers
     public class UserController : BaseController
     {
         [HttpPost("login")]
-        public async Task<ActionResult<UserDto>>  Login(Login.Query query){
+        public async Task<ActionResult<UserDto>>  Login(UserLoginQuery query){
                 return await Mediator.Send(query);
         }  
 
@@ -28,17 +28,17 @@ namespace API.Controllers
          [HttpGet]
 
          public async Task<ActionResult<UserDto>> CurrentUser(){
-             return await Mediator.Send(new CurrentUser.Query());
+             return await Mediator.Send(new CurrentUserQuery());
          }
 
         [HttpGet("list")]
         public async Task<ActionResult<IEnumerable<UserDto>>> List(){
-            return await Mediator.Send(new List.Query());
+            return await Mediator.Send(new UserListQuery());
         }
 
         [HttpGet("logout/{id}")]
         public async Task<Unit> Logout(string id){
-            return await Mediator.Send(new Logout.Query {UserId = id});
+            return await Mediator.Send(new UserLogoutQuery {UserId = id});
         }
 
     }

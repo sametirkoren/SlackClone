@@ -13,9 +13,9 @@ using Persistence;
 
 namespace Application.Messages
 {
-    public class Create
-    {
-        public class Command : IRequest<MessageDto>{
+   
+   
+        public class CreateMessageCommand : IRequest<MessageDto>{
             public string Content{get;set;}
 
             public Guid ChannelId {get;set;}
@@ -25,21 +25,21 @@ namespace Application.Messages
             public IFormFile File {get;set;}
         }
 
-        public class Handler : IRequestHandler<Command, MessageDto>
+        public class CreateMessageCommandHandler : IRequestHandler<CreateMessageCommand, MessageDto>
         {
             private readonly DataContext _context;
             private readonly IUserAccessor _userAccessor;
 
             private readonly IMapper _mapper;
             private readonly IMediaUpload _mediaUpload;
-            public Handler(DataContext context, IUserAccessor userAccessor, IMapper mapper, IMediaUpload mediaUpload )
+            public CreateMessageCommandHandler(DataContext context, IUserAccessor userAccessor, IMapper mapper, IMediaUpload mediaUpload )
             {
                 _context = context;
                 _userAccessor = userAccessor;
                 _mapper = mapper;
                 _mediaUpload = mediaUpload;
             }
-            public async Task<MessageDto> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<MessageDto> Handle(CreateMessageCommand request, CancellationToken cancellationToken)
             {
                 var user = await _context.Users.SingleOrDefaultAsync(x=>x.UserName == _userAccessor.GetCurrentUserName());
                 var channel = await _context.Channels.SingleOrDefaultAsync(x=>x.Id == request.ChannelId);
@@ -82,4 +82,3 @@ namespace Application.Messages
             
         }
     }
-}

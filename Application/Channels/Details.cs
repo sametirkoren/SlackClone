@@ -11,22 +11,21 @@ using Persistence;
 
 namespace Application.Channels
 {
-    public class Details
-    {
-        public class Query : IRequest<ChannelDto>
+  
+        public class DetailChannelQuery : IRequest<ChannelDto>
         {
             public Guid Id {get;set;}
         }
 
-        public class Handler : IRequestHandler<Query, ChannelDto>
+        public class DetailChannelQueryHandler : IRequestHandler<DetailChannelQuery, ChannelDto>
         {
             private DataContext _context;
             private IMapper _mapper;
-            public Handler(DataContext context , IMapper mapper){
+            public DetailChannelQueryHandler(DataContext context , IMapper mapper){
                 _context = context ?? throw new ArgumentNullException(nameof(context));
                 _mapper =mapper;
             }
-            public async Task<ChannelDto> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<ChannelDto> Handle(DetailChannelQuery request, CancellationToken cancellationToken)
             {
                 var channel = await _context.Channels
                 .Include(x=>x.Messages).ThenInclude(x=>x.Sender)
@@ -40,5 +39,5 @@ namespace Application.Channels
                 return channelToReturn;
             }
         }
-    }
+    
 }
